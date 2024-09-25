@@ -214,13 +214,3 @@ df['Lanzamientos'] += 1
 print(df.to_string(index=False))
 
 
-# 1 - Mejor solución: 31 Aptitud: 961
-# 2 - Mejor solución: 31 Aptitud: 961
-# 3 - Mejor solución: 31 Aptitud: 961
-# 4 - Mejor solución: 31 Aptitud: 961
-# 5 - Mejor solución: 29 Aptitud: 841
-# 6 - Mejor solución: 31 Aptitud: 961
-# 7 - Mejor solución: 31 Aptitud: 961
-# 8 - Mejor solución: 30 Aptitud: 900
-# 9 - Mejor solución: 31 Aptitud: 961
-# 10 - Mejor solución: 31 Aptitud: 961
