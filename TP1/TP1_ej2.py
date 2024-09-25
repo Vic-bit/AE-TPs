@@ -175,7 +175,7 @@ def seleccion_ranking(poblacion):
 
 
 #  -----------------------------------------------------------------
-# cruce monopunto con probabilidad de cruza pc = 0.92
+# cruce monopunto con probabilidad de cruza pc = 0.85
 #  -----------------------------------------------------------------
 def cruce_mono_punto(progenitor1, progenitor2, tasa_cruce):
     if random.random() < tasa_cruce:
@@ -210,6 +210,8 @@ def algoritmo_genetico(tamanio_poblacion, longitud_cromosoma, tasa_mutacion, tas
     for generacion in range(generaciones):
         #print("Generación:", generacion + 1)
 
+        #  -----------------------------------------------------------------
+        # Selección método para obtener los progenitores
         if metodo == 'ruleta':
             # se calcula aptitud total para luego
             aptitud_total = sum(aptitud(cromosoma) for cromosoma in poblacion)
@@ -225,9 +227,6 @@ def algoritmo_genetico(tamanio_poblacion, longitud_cromosoma, tasa_mutacion, tas
             progenitores = []
             for _ in range(tamanio_poblacion):
                 progenitores.append(seleccion_ranking(poblacion))
-
-        #  -----------------------------------------------------------------
-        # Selección método para obtener los progenitores
 
         #  -----------------------------------------------------------------
         # Cruce
@@ -256,16 +255,11 @@ def algoritmo_genetico(tamanio_poblacion, longitud_cromosoma, tasa_mutacion, tas
             # se reemplaza la poblacion con los descendientes mutados
             poblacion = descendientes_mutados
 
-        # Mostrar el mejor individuo de la generacion
+        # Mejor individuo de la generacion
         mejor_individuo = max(poblacion, key=aptitud)  # Buscar el maximo para la aptitud
         mejor_funcion_objetivo_generaciones.append(funcion_objetivo(binario_a_decimal(mejor_individuo)))
 
-        '''
-        print("mi", mejor_individuo)
-        print("Mejor individuo:", binario_a_decimal(mejor_individuo), "Aptitud:", aptitud(mejor_individuo))
-        print("_________________________________________________________________________________")
-        '''
-    return max(poblacion, key=aptitud), mejor_funcion_objetivo_generaciones  # se retorna el mejor individuo
+    return max(poblacion, key=aptitud), mejor_funcion_objetivo_generaciones
 
 
 #  -----------------------------------------------------------------
@@ -291,22 +285,33 @@ for _ in range(LANZAMIENTOS):
     mejores_soluciones_ranking.append(binario_a_decimal(solucion_ranking))
 
 mejores_soluciones = {
-    'ruleta': mejores_soluciones_ruleta,
-    'torneo': mejores_soluciones_torneo,
-    'ranking': mejores_soluciones_ranking
+    'Solución ranking': mejores_soluciones_ranking,
+    'Solución ruleta': mejores_soluciones_ruleta,
+    'Solución torneo': mejores_soluciones_torneo
 }
 
 df = pd.DataFrame(mejores_soluciones)
 
-print(df)
+# Crea una columna para los lanzamientos 
+df = df.reset_index()
+df.rename(columns={'index': 'Lanzamientos'}, inplace=True)
+df['Lanzamientos'] += 1
+
+print(df.to_string(index=False))
+
 
 print("_________________________________________________________________________________")
 print('b)')
 
 print(df.describe().loc[['min','mean','max','std']].transpose())
 
+
 print("_________________________________________________________________________________")
 print('d)')
+
+tamanios_poblaciones = [8, 10, 12]
+tasas_mutaciones = [0.08, 0.10, 0.12]
+generaciones_metodo = [16, 18, 20]
 
 mejores_soluciones_ruleta = []
 mejores_soluciones_torneo = []
@@ -321,14 +326,19 @@ for _ in range(LANZAMIENTOS):
     mejores_soluciones_ranking.append(binario_a_decimal(solucion_ranking))
 
 mejores_soluciones = {
-    'ruleta': mejores_soluciones_ruleta,
-    'torneo': mejores_soluciones_torneo,
-    'ranking': mejores_soluciones_ranking
+    'Solución ranking': mejores_soluciones_ranking,
+    'Solución ruleta': mejores_soluciones_ruleta,
+    'Solución torneo': mejores_soluciones_torneo
 }
 
 df = pd.DataFrame(mejores_soluciones)
 
-#print(df)
+# Crea una columna para los lanzamientos 
+df = df.reset_index()
+df.rename(columns={'index': 'Lanzamientos'}, inplace=True)
+df['Lanzamientos'] += 1
+
+print(df.to_string(index=False))
 
 print('Modelos con diferentes parámetros cada uno')
 print(df.describe().loc[['min','mean','max','std']].transpose())
