@@ -269,8 +269,8 @@ print("_________________________________________________________________________
 print('a)')
 
 # Se le da un seed arbitrario
-seed = 10
-#random.seed(seed)
+seed = 11
+random.seed(seed)
 
 mejores_soluciones_ruleta = []
 mejores_soluciones_torneo = []
@@ -310,14 +310,17 @@ print(df_algoritmos_resumen.to_string(index=True))
 print("_________________________________________________________________________________")
 print('d)')
 # Greedy search
-tamanios_poblaciones = [4, 6, 8, 10, 12, 14, 16]
-tasas_mutaciones = [0.04, 0.06, 0.08, 0.10, 0.12]
-generaciones_metodo = [4, 6, 8, 10, 12]
+tamanios_poblaciones = [10, 12, 14]
+tasas_mutaciones = [0.08, 0.09, 0.10, 0.11, 0.12]
+generaciones_metodo = [10, 11, 12, 13, 14, 15] #[4, 6, 8, 10, 12]
 
 # Inicializar con el mayor valor del intervalo
-mejor_solucion_ruleta = 31
-mejor_solucion_torneo = 31
-mejor_solucion_ranking = 31
+mejor_solucion_ruleta = bin(X_MAX)
+mejor_solucion_torneo = bin(X_MAX)
+mejor_solucion_ranking = bin(X_MAX)
+mejor_solucion_ruleta_dec = X_MAX
+mejor_solucion_torneo_dec = X_MAX
+mejor_solucion_ranking_dec = X_MAX
 mejores_params_ruleta = []
 mejores_params_torneo = []
 mejores_params_ranking = []
@@ -329,27 +332,30 @@ for poblacion_param in tamanios_poblaciones:
         for generacion_param in generaciones_metodo:
             
             solucion_ruleta, _ = algoritmo_genetico(poblacion_param, LONGITUD_CROMOSOMA, mutacion_param, TASA_CRUCE, generacion_param, 'ruleta')
-            if abs(binario_a_decimal(solucion_ruleta)) < abs(mejor_solucion_ruleta):
-            #if aptitud(solucion_ruleta) > aptitud(mejor_solucion_ruleta):
-                mejor_solucion_ruleta = binario_a_decimal(solucion_ruleta)
+            #if abs(binario_a_decimal(solucion_ruleta)) < abs(mejor_solucion_ruleta):
+            if aptitud(solucion_ruleta) > aptitud(mejor_solucion_ruleta):
+                mejor_solucion_ruleta = solucion_ruleta
+                mejor_solucion_ruleta_dec = binario_a_decimal(solucion_ruleta)
                 mejores_params_ruleta = [poblacion_param, mutacion_param, generacion_param]
             
             solucion_torneo, _ = algoritmo_genetico(poblacion_param, LONGITUD_CROMOSOMA, mutacion_param, TASA_CRUCE, generacion_param, 'torneo')
-            if abs(binario_a_decimal(solucion_torneo)) < abs(mejor_solucion_torneo):
-            #if aptitud(solucion_torneo) > aptitud(mejor_solucion_torneo):
-                mejor_solucion_torneo = binario_a_decimal(solucion_torneo)
+            #if abs(binario_a_decimal(solucion_torneo)) < abs(mejor_solucion_torneo):
+            if aptitud(solucion_torneo) > aptitud(mejor_solucion_torneo):
+                mejor_solucion_torneo = solucion_torneo
+                mejor_solucion_torneo_dec = binario_a_decimal(solucion_torneo) 
                 mejores_params_torneo = [poblacion_param, mutacion_param, generacion_param]
             
             solucion_ranking, _ = algoritmo_genetico(poblacion_param, LONGITUD_CROMOSOMA, mutacion_param, TASA_CRUCE, generacion_param, 'ranking')
-            if abs(binario_a_decimal(solucion_ranking)) < abs(mejor_solucion_ranking):
-            #if aptitud(solucion_ranking) > aptitud(mejor_solucion_ranking):
-                mejor_solucion_ranking = binario_a_decimal(solucion_ranking)
+            #if abs(binario_a_decimal(solucion_ranking)) < abs(mejor_solucion_ranking):
+            if aptitud(solucion_ranking) > aptitud(mejor_solucion_ranking):
+                mejor_solucion_ranking = solucion_ranking
+                mejor_solucion_ranking_dec = binario_a_decimal(solucion_ranking)
                 mejores_params_ranking = [poblacion_param, mutacion_param, generacion_param]
 
 
 mejores_soluciones = {
     'Método': ['Ranking', 'Ruleta', 'Torneo'],
-    'Solución': [mejor_solucion_ranking, mejor_solucion_ruleta,  mejor_solucion_torneo],
+    'Solución': [mejor_solucion_ranking_dec, mejor_solucion_ruleta_dec,  mejor_solucion_torneo_dec],
     'Parámetros': [mejores_params_ranking, mejores_params_ruleta, mejores_params_torneo]
 }
 
