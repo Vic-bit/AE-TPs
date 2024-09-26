@@ -79,6 +79,7 @@ def binario_a_decimal(cromosoma):
     x = X_MIN + decimal * (X_MAX - X_MIN) / ((2 ** LONGITUD_CROMOSOMA) - 1)
     return x
 
+
 #  -----------------------------------------------------------------
 # Aqui en las proximas lineas se puede ver que mi funcion objetivo es
 # a veces diferente de mi funcion fitness, depende del problema a resolver
@@ -111,7 +112,6 @@ def inicializar_poblacion(tamanio_poblacion, longitud_cromosoma):
             cromosoma = cromosoma+str(random.randint(0, 1))
         poblacion.append(cromosoma)
     return poblacion
-
 #  -----------------------------------------------------------------
 # seleccion por ruleta
 #  -----------------------------------------------------------------
@@ -269,8 +269,8 @@ print("_________________________________________________________________________
 print('a)')
 
 # Se le da un seed arbitrario
-seed = 15
-random.seed(seed)
+seed = 10
+#random.seed(seed)
 
 mejores_soluciones_ruleta = []
 mejores_soluciones_torneo = []
@@ -303,45 +303,59 @@ print(df.to_string(index=False))
 print("_________________________________________________________________________________")
 print('b)')
 
-print(df.describe().loc[['min','mean','max','std']].transpose())
-
+df_algoritmos_resumen = df[['Solución ranking','Solución ruleta','Solución torneo']].describe().loc[['min','mean','max','std']].transpose()
+df_algoritmos_resumen.rename(columns={'min': 'Mínimo', 'mean': 'Media', 'max': 'Máximo', 'std': 'Desv. Est.'}, inplace=True)
+print(df_algoritmos_resumen.to_string(index=True))
 
 print("_________________________________________________________________________________")
 print('d)')
+# Greedy search
+tamanios_poblaciones = [4, 6, 8, 10, 12, 14, 16]
+tasas_mutaciones = [0.04, 0.06, 0.08, 0.10, 0.12]
+generaciones_metodo = [4, 6, 8, 10, 12]
 
-tamanios_poblaciones = [8, 10, 12]
-tasas_mutaciones = [0.08, 0.10, 0.12]
-generaciones_metodo = [16, 18, 20]
+# Inicializar con el mayor valor del intervalo
+mejor_solucion_ruleta = 31
+mejor_solucion_torneo = 31
+mejor_solucion_ranking = 31
+mejores_params_ruleta = []
+mejores_params_torneo = []
+mejores_params_ranking = []
 
-mejores_soluciones_ruleta = []
-mejores_soluciones_torneo = []
-mejores_soluciones_ranking = []
+print(' De ', len(tamanios_poblaciones) * len(tasas_mutaciones) * len(generaciones_metodo), ' combinaciones de parámetros se encontaron:')
 
-for _ in range(LANZAMIENTOS):
-    solucion_ruleta, _ = algoritmo_genetico(TAMANIO_POBLACION_RULETA, LONGITUD_CROMOSOMA, TASA_MUTACION_RULETA, TASA_CRUCE, GENERACIONES_RULETA, 'ruleta')
-    mejores_soluciones_ruleta.append(binario_a_decimal(solucion_ruleta))
-    solucion_toneo, _ = algoritmo_genetico(TAMANIO_POBLACION_TORNEO, LONGITUD_CROMOSOMA, TASA_MUTACION_TORNEO, TASA_CRUCE, GENERACIONES_TORNEO, 'torneo')
-    mejores_soluciones_torneo.append(binario_a_decimal(solucion_toneo))
-    solucion_ranking, _ = algoritmo_genetico(TAMANIO_POBLACION_RANKING, LONGITUD_CROMOSOMA, TASA_MUTACION_RANKING, TASA_CRUCE, GENERACIONES_RANKING, 'ranking')
-    mejores_soluciones_ranking.append(binario_a_decimal(solucion_ranking))
+for poblacion_param in tamanios_poblaciones:
+    for mutacion_param in tasas_mutaciones:
+        for generacion_param in generaciones_metodo:
+            
+            solucion_ruleta, _ = algoritmo_genetico(poblacion_param, LONGITUD_CROMOSOMA, mutacion_param, TASA_CRUCE, generacion_param, 'ruleta')
+            if abs(binario_a_decimal(solucion_ruleta)) < abs(mejor_solucion_ruleta):
+            #if aptitud(solucion_ruleta) > aptitud(mejor_solucion_ruleta):
+                mejor_solucion_ruleta = binario_a_decimal(solucion_ruleta)
+                mejores_params_ruleta = [poblacion_param, mutacion_param, generacion_param]
+            
+            solucion_torneo, _ = algoritmo_genetico(poblacion_param, LONGITUD_CROMOSOMA, mutacion_param, TASA_CRUCE, generacion_param, 'torneo')
+            if abs(binario_a_decimal(solucion_torneo)) < abs(mejor_solucion_torneo):
+            #if aptitud(solucion_torneo) > aptitud(mejor_solucion_torneo):
+                mejor_solucion_torneo = binario_a_decimal(solucion_torneo)
+                mejores_params_torneo = [poblacion_param, mutacion_param, generacion_param]
+            
+            solucion_ranking, _ = algoritmo_genetico(poblacion_param, LONGITUD_CROMOSOMA, mutacion_param, TASA_CRUCE, generacion_param, 'ranking')
+            if abs(binario_a_decimal(solucion_ranking)) < abs(mejor_solucion_ranking):
+            #if aptitud(solucion_ranking) > aptitud(mejor_solucion_ranking):
+                mejor_solucion_ranking = binario_a_decimal(solucion_ranking)
+                mejores_params_ranking = [poblacion_param, mutacion_param, generacion_param]
+
 
 mejores_soluciones = {
-    'Solución ranking': mejores_soluciones_ranking,
-    'Solución ruleta': mejores_soluciones_ruleta,
-    'Solución torneo': mejores_soluciones_torneo
+    'Método': ['Ranking', 'Ruleta', 'Torneo'],
+    'Solución': [mejor_solucion_ranking, mejor_solucion_ruleta,  mejor_solucion_torneo],
+    'Parámetros': [mejores_params_ranking, mejores_params_ruleta, mejores_params_torneo]
 }
 
-df = pd.DataFrame(mejores_soluciones)
+df2 = pd.DataFrame(mejores_soluciones)
 
-# Crea una columna para los lanzamientos 
-df = df.reset_index()
-df.rename(columns={'index': 'Lanzamientos'}, inplace=True)
-df['Lanzamientos'] += 1
-
-print(df.to_string(index=False))
-
-print('Modelos con diferentes parámetros cada uno')
-print(df.describe().loc[['min','mean','max','std']].transpose())
+print(df2.to_string(index=False))
 
 print("_________________________________________________________________________________")
 print('e)')
@@ -349,16 +363,16 @@ print('e)')
 mejor_solucion_ruleta_mismos_params, mejor_funcion_objetivo_generaciones_ruleta_mismos_params = algoritmo_genetico(TAMANIO_POBLACION, LONGITUD_CROMOSOMA, TASA_MUTACION, TASA_CRUCE, GENERACIONES, 'ruleta')
 mejor_solucion_torneo_mismos_params, mejor_funcion_objetivo_generaciones_torneo_mismos_params = algoritmo_genetico(TAMANIO_POBLACION, LONGITUD_CROMOSOMA, TASA_MUTACION, TASA_CRUCE, GENERACIONES, 'torneo')
 mejor_solucion_ranking_mismos_params, mejor_funcion_objetivo_generaciones_ranking_mismos_params = algoritmo_genetico(TAMANIO_POBLACION, LONGITUD_CROMOSOMA, TASA_MUTACION, TASA_CRUCE, GENERACIONES, 'ranking')
-print("Mejor solución con método ruleta:", binario_a_decimal(mejor_solucion_ruleta_mismos_params), "Aptitud:", aptitud(mejor_solucion_ruleta_mismos_params))
-print("Mejor solución con método torneo:", binario_a_decimal(mejor_solucion_torneo_mismos_params), "Aptitud:", aptitud(mejor_solucion_torneo_mismos_params))
-print("Mejor solución con método ranking:", binario_a_decimal(mejor_solucion_ranking_mismos_params), "Aptitud:", aptitud(mejor_solucion_ranking_mismos_params))
-
-mejor_solucion_ruleta_dif_params, mejor_funcion_objetivo_generaciones_ruleta_dif_params = algoritmo_genetico(TAMANIO_POBLACION_RULETA, LONGITUD_CROMOSOMA, TASA_MUTACION_RULETA, TASA_CRUCE, GENERACIONES_RULETA, 'ruleta')
-mejor_solucion_torneo_dif_params, mejor_funcion_objetivo_generaciones_torneo_dif_params = algoritmo_genetico(TAMANIO_POBLACION_TORNEO, LONGITUD_CROMOSOMA, TASA_MUTACION_TORNEO, TASA_CRUCE, GENERACIONES_TORNEO, 'torneo')
-mejor_solucion_ranking_dif_params, mejor_funcion_objetivo_generaciones_ranking_dif_params = algoritmo_genetico(TAMANIO_POBLACION_RANKING, LONGITUD_CROMOSOMA, TASA_MUTACION_RANKING, TASA_CRUCE, GENERACIONES_RANKING, 'ranking')
-print("Mejor solución con método ruleta:", binario_a_decimal(mejor_solucion_ruleta_dif_params), "Aptitud:", aptitud(mejor_solucion_ruleta_dif_params))
-print("Mejor solución con método torneo:", binario_a_decimal(mejor_solucion_torneo_dif_params), "Aptitud:", aptitud(mejor_solucion_torneo_dif_params))
-print("Mejor solución con método ranking:", binario_a_decimal(mejor_solucion_ranking_dif_params), "Aptitud:", aptitud(mejor_solucion_ranking_dif_params))
+print("Mejor solución con método ruleta con parámetros generales:", binario_a_decimal(mejor_solucion_ruleta_mismos_params), "Aptitud:", aptitud(mejor_solucion_ruleta_mismos_params))
+print("Mejor solución con método torneo con parámetros generales:", binario_a_decimal(mejor_solucion_torneo_mismos_params), "Aptitud:", aptitud(mejor_solucion_torneo_mismos_params))
+print("Mejor solución con método ranking con parámetros generales:", binario_a_decimal(mejor_solucion_ranking_mismos_params), "Aptitud:", aptitud(mejor_solucion_ranking_mismos_params))
+print("")
+mejor_solucion_ruleta_dif_params, mejor_funcion_objetivo_generaciones_ruleta_dif_params = algoritmo_genetico(mejores_params_ruleta[0], LONGITUD_CROMOSOMA, mejores_params_ruleta[1], TASA_CRUCE, mejores_params_ruleta[2], 'ruleta')
+mejor_solucion_torneo_dif_params, mejor_funcion_objetivo_generaciones_torneo_dif_params = algoritmo_genetico(mejores_params_torneo[0], LONGITUD_CROMOSOMA, mejores_params_torneo[1], TASA_CRUCE, mejores_params_torneo[2], 'torneo')
+mejor_solucion_ranking_dif_params, mejor_funcion_objetivo_generaciones_ranking_dif_params = algoritmo_genetico(mejores_params_ranking[0], LONGITUD_CROMOSOMA, mejores_params_ranking[1], TASA_CRUCE, mejores_params_ranking[2], 'ranking')
+print("Mejor solución con método ruleta con parámetros particulares:", binario_a_decimal(mejor_solucion_ruleta_dif_params), "Aptitud:", aptitud(mejor_solucion_ruleta_dif_params))
+print("Mejor solución con método torneo con parámetros particulares:", binario_a_decimal(mejor_solucion_torneo_dif_params), "Aptitud:", aptitud(mejor_solucion_torneo_dif_params))
+print("Mejor solución con método ranking con parámetros particulares:", binario_a_decimal(mejor_solucion_ranking_dif_params), "Aptitud:", aptitud(mejor_solucion_ranking_dif_params))
 
 
 fig, ax = plt.subplots(2, 3, figsize=(10, 5))
@@ -391,7 +405,7 @@ ax[0, 2].legend(['Ranking'])
 ax[0, 2].grid(True)  # Añadir la grilla al gráfico
 
 # Gráfico en el primer subplot (ax[3])
-ax[1, 0].plot(range(1, GENERACIONES_RULETA + 1), mejor_funcion_objetivo_generaciones_ruleta_dif_params, marker='o')
+ax[1, 0].plot(range(1, mejores_params_ruleta[2] + 1), mejor_funcion_objetivo_generaciones_ruleta_dif_params, marker='o')
 ax[1, 0].set_xlabel('Generación')  # Cambiado a set_xlabel
 ax[1, 0].set_ylabel('Valor de la Función Objetivo')  # Cambiado a set_ylabel
 ax[1, 0].set_title('Método Ruleta (diferentes parámetros)')  # Cambiado a set_title
@@ -399,7 +413,7 @@ ax[1, 0].legend(['Ruleta'])
 ax[1, 0].grid(True)  # Añadir la grilla al gráfico
 
 # Gráfico en el segundo subplot (ax[4])
-ax[1, 1].plot(range(1, GENERACIONES_TORNEO + 1), mejor_funcion_objetivo_generaciones_torneo_dif_params, marker='o')
+ax[1, 1].plot(range(1, mejores_params_torneo[2] + 1), mejor_funcion_objetivo_generaciones_torneo_dif_params, marker='o')
 ax[1, 1].set_xlabel('Generación')  # Cambiado a set_xlabel
 ax[1, 1].set_ylabel('Valor de la Función Objetivo')  # Cambiado a set_ylabel
 ax[1, 1].set_title('Método Torneo (diferentes parámetros)')  # Cambiado a set_title
@@ -407,7 +421,7 @@ ax[1, 1].legend(['Torneo'])
 ax[1, 1].grid(True)  # Añadir la grilla al gráfico
 
 # Gráfico en el segundo subplot (ax[5])
-ax[1, 2].plot(range(1, GENERACIONES_RANKING + 1), mejor_funcion_objetivo_generaciones_ranking_dif_params, marker='o')
+ax[1, 2].plot(range(1, mejores_params_ranking[2] + 1), mejor_funcion_objetivo_generaciones_ranking_dif_params, marker='o')
 ax[1, 2].set_xlabel('Generación')  # Cambiado a set_xlabel
 ax[1, 2].set_ylabel('Valor de la Función Objetivo')  # Cambiado a set_ylabel
 ax[1, 2].set_title('Método Ranking (diferentes parámetros)')  # Cambiado a set_title
