@@ -92,26 +92,7 @@ X, Y = np.meshgrid(x, y)
 # Calcular Z en cada punto de la cuadrícula
 Z = funcion_objetivo(X, Y)
 
-# Crear la figura en 3D
-fig = plt.figure(figsize=(10, 7))
-ax = fig.add_subplot(111, projection='3d')  # Crear un eje 3D
 
-# Graficar la superficie
-ax.plot_surface(X, Y, Z, cmap='viridis', edgecolor='none')
-
-# Graficar el punto del máximo encontrado (punto verde)
-ax.scatter(solucion_optima[0], solucion_optima[1], valor_optimo, c='green', s=100, label='Punto máximo encontrado')
-
-# Configurar etiquetas y título
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_zlabel('f(x, y)')
-ax.set_title('PSO para la maximización de la función objetivo')
-ax.legend()
-
-plt.show()
-
-'''
 # c - Gráfica de la función objetivo y su máximo
 
 x = np.linspace(limite_inf, limite_sup, 201)
@@ -123,7 +104,7 @@ Z = funcion_objetivo(X, Y) #np.exp(-0.1 * (x**2 + y**2)) * np.cos(x) * np.sin(x)
 fig = plt.figure(1,figsize = (10,5))
 ax = fig.add_subplot(111, projection = '3d')
 
-ax.plot_surface(X, Y, Z)#, cmap='viridis', edgecolor='none')
+ax.plot_surface(X, Y, Z, cmap = 'inferno')#, cmap='viridis', edgecolor='none')
 ax.scatter(solucion_optima[0], solucion_optima[1], valor_optimo, c='green', s=100, label='Punto máximo encontrado')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
@@ -132,20 +113,20 @@ ax.set_title('PSO para la maximización de la función objetivo')
 ax.legend()#['X e^(-0.1 * (x**2 + y**2)) * cos(x) * sin(x)'])
 ax.grid()
 plt.show()
-'''
+
 
 # d - Gráfica de la línea que muestra gbest
-'''
+
 plt.figure(2,figsize = (10,5))
-plt.plot(iteracion_list, gbest_list,'r')
+plt.plot(iteracion_list, np.array(gbest_list)[:,0],'r', label = 'x_coordinate_gbest')
+plt.plot(iteracion_list, np.array(gbest_list)[:,1],'b', label = 'x_coordinate_gbest')
 plt.xlabel('Cantidad de iteraciones')
 plt.ylabel('gbest')
 plt.title('Gráfico de gbest VS iteraciones')
-plt.legend(['gbest'])
+plt.legend()
 plt.grid()
 plt.axis('tight')
-plt.xlim(1,30)
+plt.xlim(1,cantidad_iteraciones)
 plt.show()
 
-print(gbest_list)
-'''
+print(np.array(gbest_list)[:,0])
