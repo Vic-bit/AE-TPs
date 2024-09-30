@@ -78,7 +78,7 @@ print('a)')
 solucion_optima = gbest  # mejor posicion global final
 valor_optimo = fitness_gbest  # mejor fitness global final
 
-print("\nSolucion optima (x, y):", solucion_optima)
+print("\nSolucion optima (x):", solucion_optima)
 print("Valor optimo:", valor_optimo)
 
 
