@@ -23,7 +23,7 @@ LANZAMIENTOS = 10
 #  -----------------------------------------------------------------
 def aptitud(cromosoma):
 
-    # Convierto a entrero, el 2 indica que esto pasando un número binario
+    # Convierto a entero, el 2 indica que esto pasando un número binario
     x = int(cromosoma, 2)
     
     # Elevo al cuadrado el valor entero y devuelvo
@@ -201,20 +201,16 @@ for _ in range(LANZAMIENTOS):
     mejores_soluciones_ruleta.append(int(algoritmo_genetico(TAMANIO_POBLACION, LONGITUD_CROMOSOMA, TASA_MUTACION, TASA_CRUCE, GENERACIONES), 2))
 
 mejores_soluciones = {
-    'ruleta': mejores_soluciones_ruleta,
+    'Solución encontrada': mejores_soluciones_ruleta,
 }
 
 df = pd.DataFrame(mejores_soluciones)
 
-print(df.head(10))
+# Crea una columna para los lanzamientos 
+df = df.reset_index()
+df.rename(columns={'index': 'Lanzamientos'}, inplace=True)
+df['Lanzamientos'] += 1
 
-# 1 - Mejor solución: 31 Aptitud: 961
-# 2 - Mejor solución: 31 Aptitud: 961
-# 3 - Mejor solución: 31 Aptitud: 961
-# 4 - Mejor solución: 31 Aptitud: 961
-# 5 - Mejor solución: 29 Aptitud: 841
-# 6 - Mejor solución: 31 Aptitud: 961
-# 7 - Mejor solución: 31 Aptitud: 961
-# 8 - Mejor solución: 30 Aptitud: 900
-# 9 - Mejor solución: 31 Aptitud: 961
-# 10 - Mejor solución: 31 Aptitud: 961
+print(df.to_string(index=False))
+
+
