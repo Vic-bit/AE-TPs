@@ -221,12 +221,13 @@ x_torneo = np.array(x_torneo)
 y_torneo = np.array(y_torneo)
 z_torneo =  7.7 + 0.15 * x_torneo + 0.22 * y_torneo - 0.05 * x_torneo ** 2 - 0.016 * y_torneo ** 2 - 0.007 * x_torneo * y_torneo
 
-ax.plot3D(x_torneo, y_torneo,z_torneo,'r', linewidth=10, label="Torneo")
+ax.scatter(x_torneo[-1], y_torneo[-1],z_torneo[-1],label="Torneo",s=50)
 
 x_ruleta = np.array(x_ruleta)
 y_ruleta = np.array(y_ruleta)
 z_ruleta =  7.7 + 0.15 * x_ruleta + 0.22 * y_ruleta - 0.05 * x_ruleta ** 2 - 0.016 * y_ruleta ** 2 - 0.007 * x_ruleta * y_ruleta
 
-ax.plot3D(x_ruleta, y_ruleta,z_ruleta,'b', linewidth=10, label="Ruleta")
+ax.scatter(x_ruleta[-1], y_ruleta[-1], z_ruleta[-1], label="Ruleta",s=50)
+
 plt.legend()
 plt.show()
