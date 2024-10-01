@@ -152,7 +152,7 @@ X, Y = np.meshgrid(x,y)
 
 Z = funcion_objetivo(X, Y)
 
-fig = plt.figure(1,figsize = (10,5))
+fig = plt.figure(3,figsize = (10,5))
 ax = fig.add_subplot(111, projection = '3d')
 
 ax.plot_surface(X, Y, Z, cmap = 'inferno')
@@ -168,7 +168,7 @@ plt.show()
 
 # Gráfica de la línea que muestra gbest
 
-plt.figure(2,figsize = (10,5))
+plt.figure(4,figsize = (10,5))
 plt.plot(iteracion_list, np.array(gbest_list)[:,0],'r', label = 'x_coordinate_gbest')
 plt.plot(iteracion_list, np.array(gbest_list)[:,1],'b', label = 'y_coordinate_gbest')
 plt.xlabel('Cantidad de iteraciones')
@@ -201,7 +201,7 @@ for _ in range(100):
     _, fitness_gbest08, _, _ = PSO(num_particulas, dim, cantidad_iteraciones, c1, c2, w08, limite_inf, limite_sup)
     fitness_gbest_08_list.append(fitness_gbest08)
 
-plt.figure(3, figsize = (10,5))
+plt.figure(5, figsize = (10,5))
 plt.boxplot([fitness_gbest_05_list, fitness_gbest_0_list, fitness_gbest_08_list], labels = ['w=0.5', 'w=0', 'w=0.8'])
 plt.xlabel('Valores de w')
 plt.ylabel('Fitness gbest')
