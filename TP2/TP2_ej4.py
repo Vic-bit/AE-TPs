@@ -9,8 +9,8 @@ def funcion_objetivo(x):
     eq2 = x1 - 5 * x2 - 4
     return np.abs(eq1) + np.abs(eq2)
 
-lb = [-100, -100]  # limite inf
-ub = [100, 100]  # limite sup
+lb = [-10, -10]  # limite inf
+ub = [10, 10]  # limite sup
 
 num_particulas = 10  # numero de particulas
 cantidad_iteraciones = 50  # numero maximo de iteraciones
