@@ -185,8 +185,8 @@ for _ in range(LANZAMIENTOS):
 
     solucion_torneo, _ = algoritmo_genetico(TAMANIO_POBLACION, LONGITUD_CROMOSOMA, TASA_MUTACION, TASA_CRUCE, GENERACIONES, 'torneo')
     mejores_soluciones_torneo.append(aptitud(solucion_torneo))
-    x_torneo.append(binario_a_decimal_X (solucion_ruleta[:CROMOSOMASX])) 
-    y_torneo.append(binario_a_decimal_Y(solucion_ruleta[CROMOSOMASX:])) 
+    x_torneo.append(binario_a_decimal_X (solucion_torneo[:CROMOSOMASX])) 
+    y_torneo.append(binario_a_decimal_Y(solucion_torneo[CROMOSOMASX:])) 
 
 mejores_soluciones = {
     'ruleta': mejores_soluciones_ruleta,
@@ -201,6 +201,7 @@ print('c)')
 
 fig = plt.figure(figsize = (15,15))
 ax = plt.axes(projection='3d')
+plt.title("Superficie con mejores soluciones por método")
 ax.grid()
 
 x = np.arange(X_MIN, X_MAX, (X_MAX-X_MIN)/50)
@@ -213,7 +214,7 @@ surf = ax.plot_surface(X, Y, Z, cmap = plt.cm.cividis)
 # Set axes label
 ax.set_xlabel('x', labelpad=20)
 ax.set_ylabel('y', labelpad=20)
-ax.set_zlabel('z', labelpad=20)
+ax.set_zlabel('c(x,y)', labelpad=20)
 
 fig.colorbar(surf, shrink=0.5, aspect=8)
 
@@ -221,13 +222,39 @@ x_torneo = np.array(x_torneo)
 y_torneo = np.array(y_torneo)
 z_torneo =  7.7 + 0.15 * x_torneo + 0.22 * y_torneo - 0.05 * x_torneo ** 2 - 0.016 * y_torneo ** 2 - 0.007 * x_torneo * y_torneo
 
-ax.scatter(x_torneo[-1], y_torneo[-1],z_torneo[-1],label="Torneo",s=50)
+ax.scatter(x_torneo[-1], y_torneo[-1],z_torneo[-1],label="Torneo",s=50,c='b')
 
 x_ruleta = np.array(x_ruleta)
 y_ruleta = np.array(y_ruleta)
 z_ruleta =  7.7 + 0.15 * x_ruleta + 0.22 * y_ruleta - 0.05 * x_ruleta ** 2 - 0.016 * y_ruleta ** 2 - 0.007 * x_ruleta * y_ruleta
 
-ax.scatter(x_ruleta[-1], y_ruleta[-1], z_ruleta[-1], label="Ruleta",s=50)
+ax.scatter(x_ruleta[-1], y_ruleta[-1], z_ruleta[-1], label="Ruleta",s=50,c='r')
+
+plt.legend()
+plt.show()
+
+print("_________________________________________________________________________________")
+print('d)')
+fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+
+# Título general
+fig.suptitle('Curvas de Convergencia', fontsize=16)
+print(z_ruleta)
+# Gráfico en el primer subplot (ax[0])
+ax[0].plot(range(1, GENERACIONES + 1), z_ruleta, marker='o')
+ax[0].set_xlabel('Generación')  # Cambiado a set_xlabel
+ax[0].set_ylabel('Valor de la Función Objetivo')  # Cambiado a set_ylabel
+ax[0].set_title('Método Ruleta')  # Cambiado a set_title
+ax[0].legend(['Ruleta'])
+ax[0].grid(True)  # Añadir la grilla al gráfico
+
+# Gráfico en el segundo subplot (ax[1])
+ax[1].plot(range(1, GENERACIONES + 1), z_torneo, marker='o')
+ax[1].set_xlabel('Generación')  # Cambiado a set_xlabel
+ax[1].set_ylabel('Valor de la Función Objetivo')  # Cambiado a set_ylabel
+ax[1].set_title('Método Torneo')  # Cambiado a set_title
+ax[1].legend(['Torneo'])
+ax[1].grid(True)  # Añadir la grilla al gráfico
 
 plt.legend()
 plt.show()
