@@ -111,7 +111,34 @@ print('e)')
 fitness_gbest_inercia_list = []
 fitness_gbest_inercia_lineal_list = []
 fitness_gbest_factor_c_list = []
+w=0.8
+for _ in range(100):
+    _, fitness_gbest, _ = pso('inercia')
+    fitness_gbest_inercia_list.append(fitness_gbest)
+    
+    _, fitness_gbest, _ = pso('inercia_lineal')
+    fitness_gbest_inercia_lineal_list.append(fitness_gbest)
+c1=2.05
+c2=2.05
+for _ in range(100):
+    _, fitness_gbest, _= pso('factor_c')
+    fitness_gbest_factor_c_list.append(fitness_gbest)
 
+plt.figure(5, figsize = (10,5))
+plt.boxplot([fitness_gbest_inercia_list, fitness_gbest_inercia_lineal_list, fitness_gbest_factor_c_list], labels = ['Inercia', 'Inercia lineal dinámica', 'Factor de constricción'])
+plt.xlabel('Modelo')
+plt.ylabel('Fitness gbest')
+plt.title('Fitness gbest para diferentes modelos')
+
+plt.show()
+
+print("_________________________________________________________________________________")
+print('h)')
+n_particles = 6
+fitness_gbest_inercia_list = []
+fitness_gbest_inercia_lineal_list = []
+fitness_gbest_factor_c_list = []
+w=0.8
 for _ in range(100):
     _, fitness_gbest, _ = pso('inercia')
     fitness_gbest_inercia_list.append(fitness_gbest)
