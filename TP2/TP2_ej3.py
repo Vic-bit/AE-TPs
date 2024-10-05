@@ -1,9 +1,9 @@
 # ..................................................................................
-# algoritmo PSO que minimiza la funcion unimodal f(x, y) = e^(-0.1 * (x**2 + y**2)) * cos(x) * sin(x)
+# algoritmo PSO que maximiza la funcion f(x, y) = e^(-0.1 * (x**2 + y**2)) * cos(x) * sin(x)
 # ..................................................................................
 
 import numpy as np
-import matplotlib.pylab as plt
+import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 # parametros
@@ -17,7 +17,7 @@ limite_inf = -50  # limite inferior de busqueda
 limite_sup = 50  # limite superior de busqueda
 
 
-# funcion objetivo hiperboloide eliptico
+# funcion objetivo
 def funcion_objetivo(x, y):
     return np.exp(-0.1 * (x**2 + y**2)) * np.cos(x) * np.sin(y)
 
@@ -38,7 +38,7 @@ def PSO(num_particulas, dim, cantidad_iteraciones, c1, c2, w, limite_inf, limite
     gbest = pbest[np.argmax(fitness_pbest)]  # mejor posicion global inicial
     fitness_gbest = np.max(fitness_pbest)  # fitness global inicial
 
-    gbest_list = []    # lista de los gbest en cada iteración
+    gbest_fit_list = []    # lista de los gbest en cada iteración
     iteracion_list = []
 
     # busqueda
@@ -67,24 +67,19 @@ def PSO(num_particulas, dim, cantidad_iteraciones, c1, c2, w, limite_inf, limite
                 if fitness > fitness_gbest:
                     fitness_gbest = fitness  # actualizacion del mejor fitness global
                     gbest = particulas[i].copy()  # actualizacion de la mejor posicion global
-                    #print(gbest)
-
-        # imprimir el mejor global en cada iteracion
-        #print(f"Iteración {iteracion + 1}: Mejor posición global {gbest}, Valor {fitness_gbest}")
 
         # Se agrega a la lista el mejor gbest
-        gbest_list.append(gbest.copy())
+        gbest_fit_list.append(fitness_gbest)
         iteracion_list.append(iteracion+1)
 
-    return gbest, fitness_gbest, gbest_list, iteracion_list
+    return gbest, fitness_gbest, gbest_fit_list, iteracion_list
 
 
 # resultado
-
 print('------------------------------------------------------------------------------------------------')
 print('a)')
 
-gbest, fitness_gbest, gbest_list, iteracion_list = PSO(num_particulas, dim, cantidad_iteraciones, c1, c2, w, limite_inf, limite_sup)
+gbest, fitness_gbest, gbest_fit_list, iteracion_list = PSO(num_particulas, dim, cantidad_iteraciones, c1, c2, w, limite_inf, limite_sup)
 
 solucion_optima = gbest  # mejor posicion global final
 valor_optimo = fitness_gbest  # mejor fitness global final
@@ -118,11 +113,10 @@ plt.show()
 # d - Gráfica de la línea que muestra gbest
 
 plt.figure(2,figsize = (10,5))
-plt.plot(iteracion_list, np.array(gbest_list)[:,0],'r', label = 'x_coordinate_gbest')
-plt.plot(iteracion_list, np.array(gbest_list)[:,1],'b', label = 'y_coordinate_gbest')
+plt.plot(iteracion_list, np.array(gbest_fit_list),'g',label = 'gbest_fit')
 plt.xlabel('Cantidad de iteraciones')
-plt.ylabel('gbest')
-plt.title('Gráfico de gbest VS iteraciones con w=0.5')
+plt.ylabel('fitness gbest')
+plt.title('Gráfico de fitness gbest VS iteraciones con w=0.5')
 plt.legend()
 plt.grid()
 plt.axis('tight')
@@ -135,10 +129,10 @@ print('e)')
 
 w0=0
 
-gbest, fitness_gbest, gbest_list, iteracion_list = PSO(num_particulas, dim, cantidad_iteraciones, c1, c2, w0, limite_inf, limite_sup)
+gbest, fitness_gbest, gbest_fit_list, iteracion_list = PSO(num_particulas, dim, cantidad_iteraciones, c1, c2, w0, limite_inf, limite_sup)
 
-solucion_optima = gbest  # mejor posicion global final
-valor_optimo = fitness_gbest  # mejor fitness global final
+solucion_optima = gbest         # mejor posicion global final
+valor_optimo = fitness_gbest    # mejor fitness global final
 
 print("\nSolucion optima (x, y):", solucion_optima)
 print("Valor optimo:", valor_optimo)
@@ -169,11 +163,10 @@ plt.show()
 # Gráfica de la línea que muestra gbest
 
 plt.figure(4,figsize = (10,5))
-plt.plot(iteracion_list, np.array(gbest_list)[:,0],'r', label = 'x_coordinate_gbest')
-plt.plot(iteracion_list, np.array(gbest_list)[:,1],'b', label = 'y_coordinate_gbest')
+plt.plot(iteracion_list, np.array(gbest_fit_list),'g',label = 'gbest_fit')
 plt.xlabel('Cantidad de iteraciones')
-plt.ylabel('gbest')
-plt.title('Gráfico de gbest VS iteraciones con w=0')
+plt.ylabel('fitness gbest')
+plt.title('Gráfico de fitness gbest VS iteraciones con w=0')
 plt.legend()
 plt.grid()
 plt.axis('tight')
@@ -184,13 +177,16 @@ plt.show()
 print('------------------------------------------------------------------------------------------------')
 print('f)') # Con w = 0
 
+# Valor de w a probar
 w0 = 0
 w08 = 0.8
 
+# Inicializar las listas
 fitness_gbest_05_list = []
 fitness_gbest_0_list = []
 fitness_gbest_08_list = []
 
+# Iterar obteniendo los el fitness gbest para cada uno de los casos
 for _ in range(100):
     _, fitness_gbest05, _, _ = PSO(num_particulas, dim, cantidad_iteraciones, c1, c2, w, limite_inf, limite_sup)
     fitness_gbest_05_list.append(fitness_gbest05)
@@ -201,10 +197,10 @@ for _ in range(100):
     _, fitness_gbest08, _, _ = PSO(num_particulas, dim, cantidad_iteraciones, c1, c2, w08, limite_inf, limite_sup)
     fitness_gbest_08_list.append(fitness_gbest08)
 
+# Graficar el boxplot de los 3 casos de manera comparativa
 plt.figure(5, figsize = (10,5))
 plt.boxplot([fitness_gbest_05_list, fitness_gbest_0_list, fitness_gbest_08_list], labels = ['w=0.5', 'w=0', 'w=0.8'])
 plt.xlabel('Valores de w')
 plt.ylabel('Fitness gbest')
 plt.title('Fitness gbest para diferentes valores de w')
-
 plt.show()

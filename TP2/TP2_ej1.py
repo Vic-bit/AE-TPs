@@ -1,13 +1,13 @@
 # ..................................................................................
-# algoritmo PSO que minimiza la funcion unimodal f(x, y) = x^2 + y^2
+# algoritmo PSO que maximiza la funcion unimodal f(x, y) = sin(x)+sin(x^2)
 # ..................................................................................
 
 import numpy as np
-import matplotlib.pylab as plt
+import matplotlib.pyplot as plt
 
-# funcion objetivo hiperboloide eliptico
+# funcion objetivo
 def funcion_objetivo(x):
-    return np.sin(x) + np.sin(x**2) #x**2 + y**2
+    return np.sin(x) + np.sin(x**2)
 
 # parametros
 num_particulas = 2  # numero de particulas
@@ -34,7 +34,7 @@ for i in range(num_particulas):
 gbest = pbest[np.argmax(fitness_pbest)]  # mejor posicion global inicial
 fitness_gbest = np.max(fitness_pbest)  # fitness global inicial
 
-gbest_list = []    # lista de los gbest en cada iteración
+gbest_fit_list = []    # lista de los gbest en cada iteración
 iteracion_list = []
 
 # busqueda
@@ -65,7 +65,7 @@ for iteracion in range(cantidad_iteraciones):
                 gbest = particulas[i].copy()  # actualizacion de la mejor posicion global
 
     # Se agrega a la lista el mejor gbest
-    gbest_list.append(gbest.copy())
+    gbest_fit_list.append(fitness_gbest)
     iteracion_list.append(iteracion+1)
 
     # imprimir el mejor global en cada iteracion
@@ -100,14 +100,12 @@ plt.show()
 # d - Gráfica de la línea que muestra gbest
 
 plt.figure(2,figsize = (10,5))
-plt.plot(iteracion_list, gbest_list,'r')
+plt.plot(iteracion_list, gbest_fit_list,'r')
 plt.xlabel('Cantidad de iteraciones')
-plt.ylabel('gbest')
-plt.title('Gráfico de gbest VS iteraciones')
-plt.legend(['gbest'])
+plt.ylabel('fitness gbest')
+plt.title('Gráfico de fitness gbest VS iteraciones')
+plt.legend(['fitness gbest'])
 plt.grid()
 plt.axis('tight')
 plt.xlim(1,30)
 plt.show()
-
-print(gbest_list)
