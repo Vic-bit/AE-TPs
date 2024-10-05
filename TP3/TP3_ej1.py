@@ -7,7 +7,7 @@
 #                     3.5x1 +   3x2 +    3x3 = 2x4 <= 960
 # .................................................................
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 # función objetivo a maximizar
 def f(x):
@@ -23,7 +23,9 @@ def g1(x):
 def g2(x):
     return 3.5 * x[0] + 3 * x[1] + 3 * x[2] + 2 * x[3] - 640 <= 0 # restriccion2
 
-
+# tercera restriccion
+def g3(x):
+    return x[0] >= 0 and x[1] >= 0 and x[2] >= 0 and x[3] >= 0 # restriccion3
 
 # parametros
 n_particles = 20  # numero de particulas en el enjambre
@@ -40,11 +42,12 @@ pbest_fit = -np.inf * np.ones(n_particles)  # mector para las mejores aptitudes 
 gbest = np.zeros(n_dimensions)  # mejor solución global
 gbest_fit = -np.inf  # mejor aptitud global (inicialmente -infinito)
 
+bestFits = []
 # inicializacion de particulas factibles
 for i in range(n_particles):
     while True:  # bucle para asegurar que la particula sea factible
         x[i] = np.random.uniform(0, 10, n_dimensions)  # inicializacion posicion aleatoria en el rango [0, 10]
-        if g1(x[i]) and g2(x[i]):  # se comprueba si la posicion cumple las restricciones
+        if g1(x[i]) and g2(x[i]) and g3(x[i]):  # se comprueba si la posicion cumple las restricciones
             break  # Salir del bucle si es factible
     v[i] = np.random.uniform(-1, 1, n_dimensions)  # inicializar velocidad aleatoria
     pbest[i] = x[i].copy()  # ee establece el mejor valor personal inicial como la posicion actual
@@ -57,7 +60,7 @@ for _ in range(max_iterations):  # Repetir hasta el número máximo de iteracion
     for i in range(n_particles):
         fit = f(x[i])  # Se calcula la aptitud de la posicion actual
         # Se comprueba si la nueva aptitud es mejor y si cumple las restricciones
-        if fit > pbest_fit[i] and g1(x[i]) and g2(x[i]):
+        if fit > pbest_fit[i] and g1(x[i]) and g2(x[i]) and g3(x[i]):
             pbest_fit[i] = fit  # Se actualiza la mejor aptitud personal
             pbest[i] = x[i].copy()  # Se actualizar la mejor posicion personal
             if fit > gbest_fit:  # Si la nueva aptitud es mejor que la mejor global
@@ -69,10 +72,24 @@ for _ in range(max_iterations):  # Repetir hasta el número máximo de iteracion
         x[i] += v[i]  # Se actualiza la posicion de la particula
 
         # se asegura de que la nueva posicion esté dentro de las restricciones
-        if not (g1(x[i]) and g2(x[i])):
+        if not (g1(x[i]) and g2(x[i]) and g3(x[i])):
             # Si la nueva posicion no es válida, revertir a la mejor posicion personal
             x[i] = pbest[i].copy()
-
+    
+    bestFits.append(gbest_fit)
 # Se imprime la mejor solucion encontrada y también su valor optimo
 print(f"Mejor solucion: [{gbest[0]:.4f}, {gbest[1]:.4f}, {gbest[2]:.4f}, {gbest[3]:.4f}]")
 print(f"Valor optimo: {gbest_fit}")
+
+print("_________________________________________________________________________________")
+print('d)')
+fig, ax = plt.subplots(1, 1, figsize=(10, 5))
+# Gráfico en el primer subplot (ax[0])
+ax.plot(range(1, max_iterations + 1), bestFits, marker='o')
+ax.set_xlabel('Iteración')  # Cambiado a set_xlabel
+ax.set_ylabel('Utilidad')  # Cambiado a set_ylabel
+ax.set_title('Best fits')  # Cambiado a set_title
+ax.grid(True)  # Añadir la grilla al gráfico
+
+plt.legend()
+plt.show()
