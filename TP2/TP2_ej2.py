@@ -15,7 +15,7 @@ dim = 2  # dimensiones
 cantidad_iteraciones = 10  # maximo numero de iteraciones
 c1 = 2.0  # componente cognitivo
 c2 = 2.0  # componente social
-w = 0  # factor de inercia
+w = 0.7  # factor de inercia
 limite_inf = -100  # limite inferior de busqueda
 limite_sup = 100  # limite superior de busqueda
 
@@ -114,9 +114,9 @@ ax.plot(range(1, cantidad_iteraciones + 1), gbestIteracion, marker='o')
 ax.set_xlabel('Iteración')  # Cambiado a set_xlabel
 ax.set_ylabel('Valor de la Función Objetivo')  # Cambiado a set_ylabel
 ax.set_title('Gbest por Iteración')  # Cambiado a set_title
+ax.legend(['Gbest'])
 ax.grid(True)  # Añadir la grilla al gráfico
 
-plt.legend()
 plt.show()
 
 print("_________________________________________________________________________________")

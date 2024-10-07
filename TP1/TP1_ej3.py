@@ -239,7 +239,7 @@ fig, ax = plt.subplots(1, 2, figsize=(10, 5))
 
 # Título general
 fig.suptitle('Curvas de Convergencia', fontsize=16)
-print(z_ruleta)
+
 # Gráfico en el primer subplot (ax[0])
 ax[0].plot(range(1, GENERACIONES + 1), z_ruleta, marker='o')
 ax[0].set_xlabel('Generación')  # Cambiado a set_xlabel
@@ -256,5 +256,5 @@ ax[1].set_title('Método Torneo')  # Cambiado a set_title
 ax[1].legend(['Torneo'])
 ax[1].grid(True)  # Añadir la grilla al gráfico
 
-plt.legend()
+plt.tight_layout()
 plt.show()

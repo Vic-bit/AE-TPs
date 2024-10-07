@@ -103,8 +103,8 @@ ax.set_xlabel('Iteración')  # Cambiado a set_xlabel
 ax.set_ylabel('Utilidad')  # Cambiado a set_ylabel
 ax.set_title('Best fits')  # Cambiado a set_title
 ax.grid(True)  # Añadir la grilla al gráfico
+ax.legend(['Utilidad'])
 
-plt.legend()
 plt.show()
 print("_________________________________________________________________________________")
 print('e)')
